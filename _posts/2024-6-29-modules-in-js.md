@@ -166,3 +166,5 @@ CommonJs 是服务器端模块的规范，node.js 采用了这个规范，用于
 var exports = module.exports;
 // exports 是对 module.exports 的引用，指向同一个对象
 ```
+
+### ESModule
