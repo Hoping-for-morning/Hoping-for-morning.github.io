@@ -1,3 +1,15 @@
+---
+title: CSS 的 position 定位
+date: 2024-07-30
+categories: [Front-end, modules]
+tags: [frontend, css]     # TAG names should always be lowercase
+# comments: false 
+pin: false
+math: true
+mermaid: true
+toc: true
+---
+
 # CSS 的 position 定位
 > position 属性指定了元素的定位类型
 
