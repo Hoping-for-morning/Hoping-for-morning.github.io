@@ -1,7 +1,7 @@
 ---
 title: CSS 的 position 定位
 date: 2024-07-30
-categories: [Front-end, modules]
+categories: [Front-end, css]
 tags: [frontend, css]     # TAG names should always be lowercase
 # comments: false 
 pin: false
