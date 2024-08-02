@@ -2,7 +2,7 @@
 title: Tiptap
 date: 2024-07-31
 categories: [Front-end, utils]
-tags: [frontend, Tiptap]     # TAG names should always be lowercase
+tags: [frontend, tiptap]     # TAG names should always be lowercase
 # comments: false 
 pin: false
 math: true
@@ -171,7 +171,59 @@ Extensions add nodes, marks and/or functionalities to the editor.  [Extensions i
 
 ### Editor instance 编辑器实例
 
+#### Setting 配置编辑器
 
+|                  |                                                              |
+| ---------------- | ------------------------------------------------------------ |
+| element          | 指定 editor 实例会绑定到哪个元素上 `element: document.querySelector('.element')` |
+| extensions       |                                                              |
+| content          |                                                              |
+| editable         |                                                              |
+| autofocus        |                                                              |
+| enableInputRules |                                                              |
+| enablePasteRules |                                                              |
+| injectCSS        |                                                              |
+| injectNonce      |                                                              |
+| editorProps      | proseMirror 来处理，可以加入一些DOM元素的特性，如 TailwindCSS |
+| editorProps      |                                                              |
+
+#### Method 编辑器实例的方法
+
+- `can()`
+
+```javascript
+// Returns `true` if the undo command can be executed
+editor.can().undo()
+```
+
+- `chain()`
+
+```javascript
+// Execute two commands at once
+editor.chain().focus().toggleBold().run()
+```
+
+- `destroy()`
+
+```javascript
+// stop the editor instance and unbinds all events
+editor.destory()
+```
+
+- `getHTML()` `getJSON()` `getText()`
+
+```javascript
+// returns the current editor document as HTML JSON or Text
+ediotr.getHTML()
+```
+
+- `getAttributes()`
+
+```typescript
+// Get attributes of the currently selected node or mark
+// @Parameter typeOrName string | NodeType | MarkType
+editor.getAttributes('link': typeOrName).href
+```
 
 ### Commands
 
@@ -181,3 +233,23 @@ Extensions add nodes, marks and/or functionalities to the editor.  [Extensions i
 
 ## Custom extensions
 
+### Extend existing
+
+### Create New
+
+### Node Views
+
+- #### available props
+
+在自定义节点中可以使用的 props，可以当作 api 来使用
+
+| Prop               | Description                                                  |
+| :----------------- | :----------------------------------------------------------- |
+| editor             | The editor instance                                          |
+| node               | The current node                                             |
+| decorations        | An array of decorations                                      |
+| selected           | `true` when there is a `NodeSelection` at the current node view |
+| extension          | Access to the node extension, for example to get options     |
+| getPos()           | Get the document position of the current node                |
+| updateAttributes() | Update attributes of the current node                        |
+| deleteNode()       | Delete the current node                                      |
