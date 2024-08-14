@@ -200,7 +200,7 @@ message ResponseMessage {
    install Protobuf-javascript (`protoc-gen-js`)
 
    ```shell
-   npm install -g proto-gen-js
+   npm install -g protoc-gen-js
    ```
 
    install gRPC-Web code generator
@@ -218,12 +218,18 @@ message ResponseMessage {
 - `protoc` Code Generator Plugins 代码生成插件
 
 - 生成 javascript 中间代码命令 Options
-  ```
+  ```shell
+  # js
   protoc -I=$DIR [filename].proto \
     --js_out=import_style=commonjs:$OUT_DIR \
     --grpc-web_out=import_style=commonjs,mode=grpcwebtext:$OUT_DIR
+    
+  # ts
+  protoc -I=. [filename].proto \
+    --js_out=import_style=commonjs:./generate[name] \
+    --grpc-web_out=import_style=typescript,mode=grpcwebtext:./generate[name]
   ```
-
+  
   - `--js_out`
     - 支持
       - The default generated code has [Closure](https://developers.google.com/closure/library/) `goog.require()` import style.
@@ -247,52 +253,34 @@ message ResponseMessage {
 ## 封装连接
 
 ```javascript
-export const echo = (input: string) => {
+// grpcClient.js
+import { ExampleServiceClient } from './generated/example_grpc_web_pb';
+
+const client = new ExampleServiceClient('http://localhost:8080', null, null);
+
+// 封装一个 promise 请求
+const grpcCallAsync = (methodName, request) => {
   return new Promise((resolve, reject) => {
-    const request = new WriteRequest()
-    request.setInput(input)
-    
-    /**
-     * 如果返回的是 promise
-     * @returns Promise
-     * 对应的 proto 文件: rpc Writing (WriteRequest) returns (ResponseMessage) {}
-     */
-    function renderResponseCallback(responseId) {
-     	return (err, response) => {
-        if (err) {
-          console.error(err)
-        } else {
-          console.log(response)
-        }
+    client[methodName](request, {}, (err, response) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(response);
       }
-    }
-    
-    client.writing(req, {}, renderResponseCallback())
+    });
+  });
+};
 
-    /**
-     * 如果返回的是 stream，那么就可以使用 stream.on('data', callback) 来处理返回的数据
-     * @returns stream: ReadableStream
-     * 对应的 proto 文件: rpc Writing (WriteRequest) returns (stream ResponseMessage) {}
-     */
-    const stream = client.writing(req)
+export { grpcCallAsync };
+```
 
-    // 接收消息
-    stream.on('data', (response) => {
-      console.log(response)
-      resolve(response)
-    })
-
-    stream.on('error', (err) => {
-      console.error(err)
-      reject(err)
-    })
-
-    // 调用callback返回响应
-    stream.on('end', () => {
-      console.log('Stream ended.')
-    })
-    
-  })
+```javascript
+// 使用
+try {
+  const response = await grpcCallAsync('unaryCall', request);
+  setResponse1(response);
+} catch (err) {
+  console.error('Error:', err.message);
 }
 ```
 
@@ -309,5 +297,11 @@ client.sayHelloAfterDelay(request, {deadline: deadline.getTime().toString()},
   });
 ```
 
+### 使用拦截器 interceptor
 
+可以实现以下功能：
 
+1. **日志记录**：记录请求和响应的详细信息。
+2. **认证**：在请求头中添加认证信息。
+3. **错误处理**：捕获和处理错误。
+4. **重试机制**：实现请求的重试逻辑。
