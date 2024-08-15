@@ -2,10 +2,9 @@
 title: TailwindCSS 动态类名问题
 date: 2024-08-13
 categories: [Front-end]
-tags: [frontend, TailwindCSS]  
+tags: [frontend, TailwindCSS]
+description: Tailwind 提取类名的方法最重要的一点是，它只能找到源文件中以完整字符串形式存在的类。 如果使用字符串插值或将部分类名连接在一起，Tailwind 将无法找到它们，因此也不会生成相应的 CSS 
 ---
-
-# TailwindCSS 动态类名问题
 
 ### 动态设置类名
 
@@ -32,4 +31,31 @@ const dynamicClass = classNames({
   [`top-${topValue}`]: topValue !== undefined
 });
 ```
+
+
+
+### [安全列表类](https://tailwindcss.com/docs/content-configuration#safelisting-classes)
+
+- 依靠 `content` 配置来告诉 Tailwind 尽可能多地生成哪些类
+
+	```
+	content: ['./pages/**/*.{ts,tsx}', 
+						'./components/**/*.{ts,tsx}', 
+						'./app/**/*.{ts,tsx}', 
+						'./src/**/*.{ts,tsx}'],
+	```
+
+- 安全列表 `safelist` 是最后的手段，仅应在无法扫描特定内容以查找类名的情况下使用
+
+  ```
+  safelist: [
+      'bg-red-500',
+      'text-3xl',
+      'lg:text-4xl',
+  ]
+  ```
+
+  
+
+
 
