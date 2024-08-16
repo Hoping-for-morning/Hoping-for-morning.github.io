@@ -32,7 +32,18 @@ const dynamicClass = classNames({
 });
 ```
 
+### 不能构造动态类名的原因
 
+Tailwind 本质是一个 PostCSS 插件，在构建过程中会处理你的 CSS 文件。它会根据你的配置文件生成大量的实用类，并将这些类插入到最终的 CSS 文件中。Tailwind 的构建过程依赖于对你的代码进行静态分析，以确定哪些类需要生成。如果类名是动态构造的，Tailwind 无法在构建阶段识别这些类，导致这些类不会被包含在最终的 CSS 文件中。
+
+使用时必须是 TailwindCss 之前构造好的
+
+```
+const className = classNames({
+  'bg-blue-500': isBlue,
+  'bg-red-500': !isBlue,
+})
+```
 
 ### [安全列表类](https://tailwindcss.com/docs/content-configuration#safelisting-classes)
 
@@ -55,7 +66,17 @@ const dynamicClass = classNames({
   ]
   ```
 
-  
+- 如果需要将大量的类列入安全列表，可以使用正则表达式
+
+  ```
+  {
+  	pattern: /bg-(red|green|blue)-(100|200|300)/,
+  },
+  ```
+
+
+
+
 
 
 
